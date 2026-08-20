@@ -17,7 +17,7 @@
 docker compose up --build
 ```
 
-浏览器打开：http://localhost:8080
+浏览器打开：http://localhost:21111
 
 默认账号：
 
