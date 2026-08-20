@@ -1,0 +1,1622 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>物料配比平台</title>
+    <style>
+        /* ===== CSS Variables ===== */
+        :root {
+            --primary: #2563eb;
+            --primary-light: #3b82f6;
+            --primary-dark: #1d4ed8;
+            --primary-bg: #eff6ff;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #0f172a;
+            --text-secondary: #475569;
+            --text-light: #94a3b8;
+            --border: #e2e8f0;
+            --shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+            --radius: 16px;
+            --radius-sm: 10px;
+            --transition: 0.25s ease;
+            --font: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            --success: #22c55e;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: var(--font);
+            background: var(--bg);
+            color: var(--text);
+            padding: 24px 32px 48px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        input,
+        button {
+            font-family: inherit;
+            font-size: 14px;
+        }
+        .app-container {
+            max-width: 1440px;
+            width: 100%;
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 28px 32px 32px;
+            transition: var(--transition);
+        }
+
+        /* ===== Header ===== */
+        .app-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px 24px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--border);
+            margin-bottom: 28px;
+        }
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .brand-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--primary);
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 22px;
+            font-weight: 700;
+        }
+        .brand h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text);
+        }
+        .brand h1 span {
+            color: var(--primary);
+        }
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+        .user-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--primary-bg);
+            padding: 6px 14px 6px 12px;
+            border-radius: 40px;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--primary-dark);
+        }
+        .user-badge .role-tag {
+            background: var(--primary);
+            color: #fff;
+            font-size: 11px;
+            padding: 1px 10px;
+            border-radius: 40px;
+            font-weight: 600;
+        }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 20px;
+            border: none;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: var(--transition);
+            background: var(--border);
+            color: var(--text-secondary);
+        }
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+        .btn:active {
+            transform: translateY(0);
+        }
+        .btn-primary {
+            background: var(--primary);
+            color: #fff;
+        }
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--border);
+        }
+        .btn-outline:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+        .btn-danger {
+            background: var(--danger);
+            color: #fff;
+        }
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+        .btn-success {
+            background: var(--success);
+            color: #fff;
+        }
+        .btn-success:hover {
+            background: #16a34a;
+        }
+        .btn-sm {
+            padding: 5px 14px;
+            font-size: 12px;
+        }
+        .btn-xs {
+            padding: 3px 10px;
+            font-size: 11px;
+        }
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        /* ===== Grid ===== */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 360px;
+            gap: 28px;
+            margin-bottom: 28px;
+        }
+        .panel {
+            background: var(--bg);
+            border-radius: var(--radius-sm);
+            padding: 20px 22px 22px;
+            border: 1px solid var(--border);
+        }
+        .panel-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text);
+        }
+        .panel-title .badge {
+            background: var(--primary-bg);
+            color: var(--primary-dark);
+            font-size: 12px;
+            padding: 0 10px;
+            border-radius: 40px;
+            font-weight: 500;
+        }
+
+        /* ===== Input Table ===== */
+        .input-table-wrap {
+            overflow-x: auto;
+        }
+        .input-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+            min-width: 600px;
+        }
+        .input-table th {
+            text-align: center;
+            padding: 10px 6px;
+            background: #f1f5f9;
+            font-weight: 600;
+            font-size: 13px;
+            color: var(--text-secondary);
+            border-bottom: 2px solid var(--border);
+            white-space: nowrap;
+        }
+        .input-table td {
+            text-align: center;
+            padding: 6px 4px;
+            border-bottom: 1px solid var(--border);
+        }
+        .input-table .row-label {
+            font-weight: 600;
+            font-size: 14px;
+            text-align: left;
+            padding-left: 8px;
+            white-space: nowrap;
+            color: var(--text);
+        }
+        .input-table input {
+            width: 70px;
+            padding: 6px 4px;
+            border: 1.5px solid var(--border);
+            border-radius: 6px;
+            text-align: center;
+            font-size: 13px;
+            font-weight: 500;
+            background: #fff;
+            transition: var(--transition);
+            color: var(--text);
+        }
+        .input-table input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+        }
+        .input-table input:disabled {
+            background: #f1f5f9;
+            color: var(--text-light);
+        }
+        .input-table input::placeholder {
+            color: var(--text-light);
+            font-weight: 300;
+            font-size: 11px;
+        }
+        .input-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 18px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .input-actions .hint {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-left: auto;
+        }
+
+        /* ===== Output Panel ===== */
+        .output-panel .panel {
+            background: var(--primary-bg);
+            border-color: #b9d0f8;
+        }
+        .output-panel .panel-title {
+            color: var(--primary-dark);
+        }
+        .output-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 4px;
+        }
+        .output-item {
+            background: #fff;
+            border-radius: var(--radius-sm);
+            padding: 12px 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border: 1px solid #dbeafe;
+            transition: var(--transition);
+        }
+        .output-item:hover {
+            border-color: var(--primary-light);
+        }
+        .output-item .label {
+            font-weight: 500;
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+        .output-item .value {
+            font-weight: 700;
+            font-size: 20px;
+            color: var(--primary-dark);
+            font-variant-numeric: tabular-nums;
+        }
+        .output-item .value.placeholder {
+            color: var(--text-light);
+            font-weight: 400;
+            font-size: 14px;
+        }
+        .output-item .value .unit {
+            font-size: 12px;
+            font-weight: 400;
+            color: var(--text-light);
+            margin-left: 2px;
+        }
+
+        /* ===== Check Summary ===== */
+        .check-summary {
+            margin-top: 14px;
+            padding: 12px 14px;
+            background: #fff;
+            border-radius: var(--radius-sm);
+            border: 1px solid #dbeafe;
+            font-size: 13px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px 20px;
+        }
+        .check-summary .check-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--text-secondary);
+        }
+        .check-summary .check-item .ck-label {
+            font-weight: 500;
+        }
+        .check-summary .check-item .ck-value {
+            font-weight: 600;
+            font-variant-numeric: tabular-nums;
+        }
+        .check-summary .check-item .ck-status {
+            font-size: 16px;
+            margin-left: 4px;
+        }
+        .ck-ok {
+            color: var(--success);
+        }
+        .ck-warn {
+            color: var(--warning);
+        }
+        .ck-err {
+            color: var(--danger);
+        }
+        .output-note {
+            margin-top: 10px;
+            font-size: 12px;
+            color: var(--text-secondary);
+            border-top: 1px solid #dbeafe;
+            padding-top: 10px;
+            text-align: center;
+        }
+
+        /* ===== History ===== */
+        .history-section {
+            margin-top: 8px;
+        }
+        .history-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+        .history-header .panel-title {
+            margin-bottom: 0;
+        }
+        .history-table-wrap {
+            overflow-x: auto;
+        }
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            min-width: 580px;
+        }
+        .history-table th {
+            text-align: center;
+            padding: 10px 8px;
+            background: #f1f5f9;
+            font-weight: 600;
+            font-size: 12px;
+            color: var(--text-secondary);
+            border-bottom: 2px solid var(--border);
+            white-space: nowrap;
+        }
+        .history-table td {
+            text-align: center;
+            padding: 8px 6px;
+            border-bottom: 1px solid var(--border);
+            font-size: 13px;
+            color: var(--text);
+        }
+        .history-table .time-col {
+            color: var(--text-secondary);
+            font-size: 12px;
+            white-space: nowrap;
+        }
+        .history-empty {
+            text-align: center;
+            padding: 30px 0;
+            color: var(--text-light);
+            font-size: 14px;
+        }
+
+        /* ===== Modal ===== */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.5);
+            backdrop-filter: blur(4px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+        .modal-overlay.active {
+            display: flex;
+        }
+        .modal {
+            background: #fff;
+            border-radius: var(--radius);
+            max-width: 540px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 28px 32px 32px;
+            box-shadow: 0 24px 64px rgba(0, 0, 0, 0.18);
+            animation: modalIn 0.25s ease;
+        }
+        @keyframes modalIn {
+            from {
+                opacity: 0;
+                transform: scale(0.96) translateY(12px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        .modal-header h2 {
+            font-size: 20px;
+            font-weight: 700;
+        }
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 26px;
+            cursor: pointer;
+            color: var(--text-light);
+            padding: 0 4px;
+            line-height: 1;
+            transition: var(--transition);
+        }
+        .modal-close:hover {
+            color: var(--text);
+            transform: rotate(90deg);
+        }
+        .modal .form-group {
+            margin-bottom: 16px;
+        }
+        .modal .form-group label {
+            display: block;
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 4px;
+            color: var(--text-secondary);
+        }
+        .modal .form-group input,
+        .modal .form-group select {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            transition: var(--transition);
+            background: #fff;
+        }
+        .modal .form-group input:focus,
+        .modal .form-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.10);
+        }
+        .modal .form-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            justify-content: flex-end;
+        }
+        .user-list {
+            margin-top: 8px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            overflow: hidden;
+        }
+        .user-list-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 16px;
+            border-bottom: 1px solid var(--border);
+            font-size: 14px;
+        }
+        .user-list-item:last-child {
+            border-bottom: none;
+        }
+        .user-list-item .info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .user-list-item .info .uname {
+            font-weight: 600;
+        }
+        .user-list-item .info .urole {
+            font-size: 12px;
+            background: var(--primary-bg);
+            color: var(--primary-dark);
+            padding: 0 10px;
+            border-radius: 40px;
+            font-weight: 500;
+        }
+        .user-list-item .actions {
+            display: flex;
+            gap: 6px;
+        }
+
+        .login-error {
+            color: var(--danger);
+            font-size: 13px;
+            margin-top: 8px;
+            display: none;
+        }
+        .login-error.show {
+            display: block;
+        }
+
+        /* ===== Responsive ===== */
+        @media (max-width: 1024px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+            .output-grid {
+                grid-template-columns: 1fr 1fr 1fr;
+            }
+            .check-summary {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        @media (max-width: 700px) {
+            body {
+                padding: 12px 12px 32px;
+            }
+            .app-container {
+                padding: 16px 14px 20px;
+            }
+            .app-header {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 12px;
+            }
+            .brand h1 {
+                font-size: 20px;
+            }
+            .header-actions {
+                justify-content: space-between;
+            }
+            .output-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .check-summary {
+                grid-template-columns: 1fr;
+            }
+            .input-table input {
+                width: 56px;
+                font-size: 12px;
+                padding: 4px 2px;
+            }
+            .input-table th,
+            .input-table td {
+                padding: 6px 3px;
+                font-size: 12px;
+            }
+            .modal {
+                padding: 20px 16px;
+                margin: 10px;
+            }
+        }
+        @media (max-width: 480px) {
+            .output-grid {
+                grid-template-columns: 1fr;
+            }
+            .input-table input {
+                width: 48px;
+                font-size: 11px;
+            }
+            .input-table .row-label {
+                font-size: 12px;
+            }
+            .btn {
+                font-size: 12px;
+                padding: 6px 14px;
+            }
+        }
+
+        /* ===== Scrollbar ===== */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg);
+            border-radius: 8px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 8px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-light);
+        }
+
+        .text-muted {
+            color: var(--text-secondary);
+        }
+        .hidden {
+            display: none !important;
+        }
+        .flex-center {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .gap-4 {
+            gap: 4px;
+        }
+        .mt-8 {
+            margin-top: 8px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container" id="app">
+
+        <!-- ===== HEADER ===== -->
+        <header class="app-header">
+            <div class="brand">
+                <div class="brand-icon">⚙</div>
+                <h1>物料配比<span>平台</span></h1>
+            </div>
+            <div class="header-actions">
+                <div class="user-badge" id="userBadge">
+                    <span>👤</span>
+                    <span id="userDisplay">未登录</span>
+                    <span class="role-tag" id="roleTag" style="display:none;">访客</span>
+                </div>
+                <button class="btn btn-outline btn-sm" id="loginBtn">登录</button>
+                <button class="btn btn-outline btn-sm hidden" id="logoutBtn">登出</button>
+                <button class="btn btn-primary btn-sm" id="userMgmtBtn" style="display:none;">👥 用户管理</button>
+            </div>
+        </header>
+
+        <!-- ===== MAIN GRID ===== -->
+        <div class="main-grid">
+
+            <!-- LEFT: Input -->
+            <section>
+                <div class="panel">
+                    <div class="panel-title">
+                        📊 物料化学成分
+                        <span class="badge">% 质量分数</span>
+                        <span style="margin-left:auto;font-size:13px;font-weight:400;color:var(--text-secondary);" id="inputStatus">● 就绪</span>
+                    </div>
+                    <div class="input-table-wrap">
+                        <table class="input-table" id="inputTable">
+                            <thead>
+                                <tr>
+                                    <th style="text-align:left;padding-left:8px;min-width:70px;">物料</th>
+                                    <th>SiO₂</th>
+                                    <th>Al₂O₃</th>
+                                    <th>CaO</th>
+                                    <th>Fe₂O₃</th>
+                                    <th>MgO</th>
+                                    <th>SO₃</th>
+                                </tr>
+                            </thead>
+                            <tbody id="inputBody">
+                                <!-- injected by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="input-actions">
+                        <button class="btn btn-primary" id="calcBtn">▶ 计算配比</button>
+                        <button class="btn btn-outline" id="resetBtn">↺ 重置</button>
+                        <button class="btn btn-outline" id="loadExampleBtn">📥 加载示例</button>
+                        <span class="hint" id="calcHint">输入成分后点击计算</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- RIGHT: Output -->
+            <aside class="output-panel">
+                <div class="panel">
+                    <div class="panel-title">
+                        🎯 配比输出
+                        <span class="badge">质量值 (总量100)</span>
+                    </div>
+                    <div class="output-grid" id="outputGrid">
+                        <div class="output-item"><span class="label">煤矸石 (x)</span><span class="value placeholder" id="outX">—</span></div>
+                        <div class="output-item"><span class="label">粉煤灰 (y)</span><span class="value placeholder" id="outY">—</span></div>
+                        <div class="output-item"><span class="label">石灰石 (z)</span><span class="value placeholder" id="outZ">—</span></div>
+                        <div class="output-item"><span class="label">脱硫石膏 (w)</span><span class="value placeholder" id="outW">—</span></div>
+                        <div class="output-item" style="grid-column:1/-1;"><span class="label">电石渣 (V)</span><span class="value placeholder" id="outV">—</span></div>
+                    </div>
+
+                    <!-- 校验摘要 -->
+                    <div class="check-summary" id="checkSummary">
+                        <div class="check-item"><span class="ck-label">总质量</span><span class="ck-value" id="ckTotal">—</span><span class="ck-status" id="ckTotalStatus">⚪</span></div>
+                        <div class="check-item"><span class="ck-label">x : y</span><span class="ck-value" id="ckRatio">—</span><span class="ck-status" id="ckRatioStatus">⚪</span></div>
+                        <div class="check-item"><span class="ck-label">硫平衡偏差</span><span class="ck-value" id="ckSulfur">—</span><span class="ck-status" id="ckSulfurStatus">⚪</span></div>
+                        <div class="check-item"><span class="ck-label">Ca/(2Si+12/7Al)</span><span class="ck-value" id="ckCaRatio">—</span><span class="ck-status" id="ckCaStatus">⚪</span></div>
+                    </div>
+
+                    <div class="output-note" id="outputNote">请先输入物料成分，点击「计算配比」</div>
+                </div>
+            </aside>
+        </div>
+
+        <!-- ===== HISTORY ===== -->
+        <section class="history-section">
+            <div class="history-header">
+                <div class="panel-title">
+                    📋 历史记录
+                    <span class="badge" id="historyCount">0 条</span>
+                </div>
+                <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                    <button class="btn btn-outline btn-sm" id="refreshHistoryBtn">⟳ 刷新</button>
+                    <button class="btn btn-danger btn-sm" id="clearHistoryBtn">🗑 清空</button>
+                </div>
+            </div>
+            <div class="panel" style="padding:12px 16px 16px;background:var(--bg);">
+                <div class="history-table-wrap">
+                    <table class="history-table" id="historyTable">
+                        <thead>
+                            <tr>
+                                <th style="text-align:left;padding-left:8px;">时间</th>
+                                <th>煤矸石 x</th>
+                                <th>粉煤灰 y</th>
+                                <th>石灰石 z</th>
+                                <th>脱硫石膏 w</th>
+                                <th>电石渣 V</th>
+                                <th>Ca/(2Si+12/7Al)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="historyBody">
+                            <tr><td colspan="7" class="history-empty">暂无历史记录</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <div style="margin-top:20px;font-size:13px;color:var(--text-light);text-align:center;border-top:1px solid var(--border);padding-top:18px;">
+            物料配比平台 v3.0 &nbsp;·&nbsp; 数据存储在本地浏览器
+        </div>
+    </div>
+
+    <!-- ===== LOGIN MODAL ===== -->
+    <div class="modal-overlay" id="loginModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2>🔐 登录</h2>
+                <button class="modal-close" data-close="loginModal">✕</button>
+            </div>
+            <div class="form-group">
+                <label>用户名</label>
+                <input type="text" id="loginUsername" placeholder="请输入用户名" value="admin" />
+            </div>
+            <div class="form-group">
+                <label>密码</label>
+                <input type="password" id="loginPassword" placeholder="请输入密码" value="admin123" />
+            </div>
+            <div class="login-error" id="loginError">用户名或密码错误，请重试</div>
+            <div class="form-actions">
+                <button class="btn btn-outline" data-close="loginModal">取消</button>
+                <button class="btn btn-primary" id="loginConfirmBtn">登 录</button>
+            </div>
+            <div style="margin-top:14px;font-size:13px;color:var(--text-secondary);border-top:1px solid var(--border);padding-top:14px;text-align:center;">
+                默认管理员：admin / admin123 &nbsp;·&nbsp; 普通用户：user / user123
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== USER MANAGEMENT MODAL ===== -->
+    <div class="modal-overlay" id="userMgmtModal">
+        <div class="modal" style="max-width:600px;">
+            <div class="modal-header">
+                <h2>👥 用户管理</h2>
+                <button class="modal-close" data-close="userMgmtModal">✕</button>
+            </div>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;align-items:flex-end;">
+                <div class="form-group" style="flex:1;min-width:120px;margin-bottom:0;">
+                    <label style="font-size:12px;">用户名</label>
+                    <input type="text" id="newUsername" placeholder="新用户名" />
+                </div>
+                <div class="form-group" style="flex:1;min-width:120px;margin-bottom:0;">
+                    <label style="font-size:12px;">密码</label>
+                    <input type="text" id="newPassword" placeholder="密码" />
+                </div>
+                <div class="form-group" style="flex:0 0 110px;margin-bottom:0;">
+                    <label style="font-size:12px;">角色</label>
+                    <select id="newRole">
+                        <option value="user">用户</option>
+                        <option value="admin">管理员</option>
+                    </select>
+                </div>
+                <button class="btn btn-success" id="addUserBtn" style="flex-shrink:0;height:40px;">➕ 添加</button>
+            </div>
+            <div class="user-list" id="userListContainer"></div>
+            <div class="form-actions" style="margin-top:16px;">
+                <button class="btn btn-outline" data-close="userMgmtModal">关闭</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ================================================================
+        //  STORAGE & DATA LAYER
+        // ================================================================
+        const STORAGE_KEYS = {
+            users: 'mp_users',
+            history: 'mp_history',
+            currentUser: 'mp_currentUser',
+        };
+        const MATERIALS = ['煤矸石', '粉煤灰', '石灰石', '脱硫石膏', '电石渣'];
+        const COMPONENTS = ['SiO2', 'Al2O3', 'CaO', 'Fe2O3', 'MgO', 'SO3'];
+        const OUTPUT_KEYS = ['x', 'y', 'z', 'w', 'V'];
+        const OUTPUT_LABELS = ['煤矸石 (x)', '粉煤灰 (y)', '石灰石 (z)', '脱硫石膏 (w)', '电石渣 (V)'];
+
+        function getDefaultUsers() {
+            return [
+                { id: 'u1', username: 'admin', password: 'admin123', role: 'admin' },
+                { id: 'u2', username: 'user', password: 'user123', role: 'user' },
+            ];
+        }
+
+        function loadData(key, fallback) {
+            try { const raw = localStorage.getItem(key); if (!raw) return fallback; return JSON.parse(raw); } catch { return fallback; }
+        }
+
+        function saveData(key, data) { localStorage.setItem(key, JSON.stringify(data)); }
+
+        function genId() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 6); }
+
+        function formatTime(ts) { return new Date(ts).toLocaleString('zh-CN', { hour12: false }); }
+
+        function getUsers() {
+            let users = loadData(STORAGE_KEYS.users, null);
+            if (!users || !users.length) { users = getDefaultUsers();
+                saveData(STORAGE_KEYS.users, users); }
+            return users;
+        }
+
+        function saveUsers(users) { saveData(STORAGE_KEYS.users, users); }
+
+        function getCurrentUser() {
+            const raw = localStorage.getItem(STORAGE_KEYS.currentUser);
+            if (!raw) return null;
+            try { return JSON.parse(raw); } catch { return null; }
+        }
+
+        function setCurrentUser(user) {
+            if (user) saveData(STORAGE_KEYS.currentUser, user);
+            else localStorage.removeItem(STORAGE_KEYS.currentUser);
+        }
+
+        function findUser(username, password) {
+            return getUsers().find(u => u.username === username && u.password === password) || null;
+        }
+
+        function findUserById(id) { return getUsers().find(u => u.id === id) || null; }
+
+        function getHistory() { return loadData(STORAGE_KEYS.history, []); }
+
+        function saveHistoryItem(record) {
+            const history = getHistory();
+            history.unshift({ id: genId(), time: Date.now(), ...record });
+            if (history.length > 200) history.length = 200;
+            saveData(STORAGE_KEYS.history, history);
+        }
+
+        function clearHistory() { saveData(STORAGE_KEYS.history, []); }
+
+        // ================================================================
+        //  STATE
+        // ================================================================
+        let currentUser = getCurrentUser();
+        let inputData = {}; // { '煤矸石': { SiO2: '', Al2O3: '', ... }, ... }
+        let outputData = null; // { x, y, z, w, V, checks: {...} }
+
+        // ================================================================
+        //  DOM REFS
+        // ================================================================
+        const $ = id => document.getElementById(id);
+        const $$ = sel => document.querySelectorAll(sel);
+
+        const inputBody = $('inputBody');
+        const outX = $('outX'),
+            outY = $('outY'),
+            outZ = $('outZ'),
+            outW = $('outW'),
+            outV = $('outV');
+        const calcBtn = $('calcBtn');
+        const resetBtn = $('resetBtn');
+        const loadExampleBtn = $('loadExampleBtn');
+        const calcHint = $('calcHint');
+        const inputStatus = $('inputStatus');
+        const outputNote = $('outputNote');
+
+        const ckTotal = $('ckTotal'),
+            ckTotalStatus = $('ckTotalStatus');
+        const ckRatio = $('ckRatio'),
+            ckRatioStatus = $('ckRatioStatus');
+        const ckSulfur = $('ckSulfur'),
+            ckSulfurStatus = $('ckSulfurStatus');
+        const ckCaRatio = $('ckCaRatio'),
+            ckCaStatus = $('ckCaStatus');
+
+        const userDisplay = $('userDisplay');
+        const roleTag = $('roleTag');
+        const loginBtn = $('loginBtn');
+        const logoutBtn = $('logoutBtn');
+        const userMgmtBtn = $('userMgmtBtn');
+
+        const loginModal = $('loginModal');
+        const loginUsername = $('loginUsername');
+        const loginPassword = $('loginPassword');
+        const loginError = $('loginError');
+        const loginConfirmBtn = $('loginConfirmBtn');
+
+        const userMgmtModal = $('userMgmtModal');
+        const userListContainer = $('userListContainer');
+        const newUsername = $('newUsername');
+        const newPassword = $('newPassword');
+        const newRole = $('newRole');
+        const addUserBtn = $('addUserBtn');
+
+        const historyBody = $('historyBody');
+        const historyCount = $('historyCount');
+        const refreshHistoryBtn = $('refreshHistoryBtn');
+        const clearHistoryBtn = $('clearHistoryBtn');
+
+        // ================================================================
+        //  RENDER INPUT TABLE
+        // ================================================================
+        function renderInputTable() {
+            let html = '';
+            MATERIALS.forEach((mat) => {
+                html += `<tr>`;
+                html += `<td class="row-label">${mat}</td>`;
+                COMPONENTS.forEach((comp) => {
+                    const val = (inputData[mat] && inputData[mat][comp] !== undefined) ? inputData[mat][comp] :
+                    '';
+                    html += `<td><input type="number" step="any" min="0" max="100" 
+                                class="input-cell" data-mat="${mat}" data-comp="${comp}" 
+                                value="${val}" placeholder="0" /></td>`;
+                });
+                html += `</tr>`;
+            });
+            inputBody.innerHTML = html;
+
+            $$('.input-cell').forEach(el => {
+                el.addEventListener('input', onInputChange);
+                el.addEventListener('focus', () => el.select());
+            });
+
+            // 禁用状态
+            if (!currentUser) {
+                $$('.input-cell').forEach(el => el.disabled = true);
+                calcBtn.disabled = true;
+                resetBtn.disabled = true;
+            } else {
+                $$('.input-cell').forEach(el => el.disabled = false);
+                calcBtn.disabled = false;
+                resetBtn.disabled = false;
+            }
+        }
+
+        function onInputChange(e) {
+            const el = e.target;
+            const mat = el.dataset.mat;
+            const comp = el.dataset.comp;
+            const val = el.value.trim() === '' ? '' : parseFloat(el.value);
+            if (!inputData[mat]) inputData[mat] = {};
+            if (val === '' || isNaN(val)) delete inputData[mat][comp];
+            else inputData[mat][comp] = val;
+
+            if (outputData !== null) {
+                outputData = null;
+                clearOutputDisplay();
+                outputNote.textContent = '输入已更改，请重新计算';
+            }
+            inputStatus.textContent = '● 已修改';
+            // 清空校验
+            clearChecks();
+        }
+
+        function clearChecks() {
+            ckTotal.textContent = '—';
+            ckTotalStatus.textContent = '⚪';
+            ckRatio.textContent = '—';
+            ckRatioStatus.textContent = '⚪';
+            ckSulfur.textContent = '—';
+            ckSulfurStatus.textContent = '⚪';
+            ckCaRatio.textContent = '—';
+            ckCaStatus.textContent = '⚪';
+        }
+
+        function clearOutputDisplay() {
+            outX.textContent = '—';
+            outX.className = 'value placeholder';
+            outY.textContent = '—';
+            outY.className = 'value placeholder';
+            outZ.textContent = '—';
+            outZ.className = 'value placeholder';
+            outW.textContent = '—';
+            outW.className = 'value placeholder';
+            outV.textContent = '—';
+            outV.className = 'value placeholder';
+            clearChecks();
+        }
+
+        function setOutputDisplay(result) {
+            const map = { x: outX, y: outY, z: outZ, w: outW, V: outV };
+            OUTPUT_KEYS.forEach(key => {
+                const el = map[key];
+                if (result[key] !== undefined && result[key] !== null && !isNaN(result[key])) {
+                    el.textContent = result[key].toFixed(4);
+                    el.className = 'value';
+                } else {
+                    el.textContent = '—';
+                    el.className = 'value placeholder';
+                }
+            });
+
+            // 显示校验信息
+            if (result.checks) {
+                const c = result.checks;
+                ckTotal.textContent = c.total !== undefined ? c.total.toFixed(4) : '—';
+                ckTotalStatus.textContent = c.totalOk ? '✅' : '❌';
+                ckTotalStatus.className = 'ck-status ' + (c.totalOk ? 'ck-ok' : 'ck-err');
+
+                ckRatio.textContent = c.ratio !== undefined ? c.ratio.toFixed(4) : '—';
+                ckRatioStatus.textContent = c.ratioOk ? '✅' : (c.ratioWarn ? '⚠️' : '❌');
+                ckRatioStatus.className = 'ck-status ' + (c.ratioOk ? 'ck-ok' : (c.ratioWarn ? 'ck-warn' : 'ck-err'));
+
+                ckSulfur.textContent = c.sulfurDev !== undefined ? c.sulfurDev.toExponential(4) : '—';
+                ckSulfurStatus.textContent = c.sulfurOk ? '✅' : '❌';
+                ckSulfurStatus.className = 'ck-status ' + (c.sulfurOk ? 'ck-ok' : 'ck-err');
+
+                ckCaRatio.textContent = c.caRatio !== undefined ? c.caRatio.toFixed(4) : '—';
+                ckCaStatus.textContent = c.caOk ? '✅' : '❌';
+                ckCaStatus.className = 'ck-status ' + (c.caOk ? 'ck-ok' : 'ck-err');
+            }
+
+            outputNote.textContent = `✅ 计算完成  ·  ${new Date().toLocaleString()}`;
+            inputStatus.textContent = '● 已计算';
+        }
+
+        // ================================================================
+        //  CORE ALGORITHM  (基于线性方程组)
+        // ================================================================
+        function computeRatios(materials) {
+            // materials: 数组长度5，对应 [煤矸石, 粉煤灰, 石灰石, 脱硫石膏, 电石渣]
+            // 每个元素 { SiO2, Al2O3, CaO, Fe2O3, MgO, SO3 } (质量分数%)
+            const MW = { SiO2: 60, Al2O3: 102, CaO: 56, SO3: 80 };
+
+            // 提取成分，缺失填0
+            const data = materials.map(m => ({
+                SiO2: parseFloat(m.SiO2) || 0,
+                Al2O3: parseFloat(m.Al2O3) || 0,
+                CaO: parseFloat(m.CaO) || 0,
+                SO3: parseFloat(m.SO3) || 0
+            }));
+
+            // 固定电石渣质量
+            const V_fixed = 6;
+            const totalMass = 100;
+            const sumUnknown = totalMass - V_fixed; // 94
+
+            // 计算系数 a_i (硫平衡) 和 b_i (钙硅铝比)
+            // a_i = SO3/80 - 0.5*(Al2O3/102)
+            // b_i = CaO/56 - 1.03*(2*SiO2/60 + (12/7)*Al2O3/102)
+            const a = data.map(d => (d.SO3 / MW.SO3) - 0.5 * (d.Al2O3 / MW.Al2O3));
+            const b = data.map(d => {
+                const nCa = d.CaO / MW.CaO;
+                const nSi = d.SiO2 / MW.SiO2;
+                const nAl = d.Al2O3 / MW.Al2O3;
+                const ratio = 1.03;
+                return nCa - ratio * (2 * nSi + (12 / 7) * nAl);
+            });
+
+            // 构建矩阵 A (4x4) 和向量 B (4)
+            // 未知数顺序: [x, y, z, w]
+            const A = [
+                [1, 1, 1, 1], // 总质量: x+y+z+w = 94
+                [-2, 1, 0, 0], // y = 2x
+                [a[0], a[1], a[2], a[3]], // 硫平衡
+                [b[0], b[1], b[2], b[3]] // 钙硅铝比
+            ];
+            const B = [
+                sumUnknown,
+                0,
+                -a[4] * V_fixed,
+                -b[4] * V_fixed
+            ];
+
+            // 高斯消元
+            function gaussianEliminate(A, B) {
+                const n = A.length;
+                const aug = A.map((row, i) => [...row, B[i]]);
+                for (let col = 0; col < n; col++) {
+                    let maxRow = col;
+                    for (let i = col + 1; i < n; i++) {
+                        if (Math.abs(aug[i][col]) > Math.abs(aug[maxRow][col])) maxRow = i;
+                    }
+                    if (Math.abs(aug[maxRow][col]) < 1e-14) {
+                        throw new Error('矩阵奇异，无唯一解。请检查输入数据是否合理。');
+                    }
+                    [aug[col], aug[maxRow]] = [aug[maxRow], aug[col]];
+                    for (let i = col + 1; i < n; i++) {
+                        const factor = aug[i][col] / aug[col][col];
+                        for (let j = col; j <= n; j++) {
+                            aug[i][j] -= factor * aug[col][j];
+                        }
+                    }
+                }
+                const x = new Array(n).fill(0);
+                for (let i = n - 1; i >= 0; i--) {
+                    let sum = aug[i][n];
+                    for (let j = i + 1; j < n; j++) {
+                        sum -= aug[i][j] * x[j];
+                    }
+                    x[i] = sum / aug[i][i];
+                }
+                return x;
+            }
+
+            let sol;
+            try {
+                sol = gaussianEliminate(A, B);
+            } catch (e) {
+                return { error: e.message };
+            }
+
+            let [x, y, z, w] = sol;
+
+            // 检查非负，如果出现负值则截断并重新归一化
+            let result = { x, y, z, w, V: V_fixed };
+            let allPositive = Object.values(result).every(v => v >= -1e-9);
+            if (!allPositive) {
+                Object.keys(result).forEach(k => { if (result[k] < 0) result[k] = 0; });
+                const total = result.x + result.y + result.z + result.w + result.V;
+                if (total > 0) {
+                    const scale = 100 / total;
+                    result.x *= scale;
+                    result.y *= scale;
+                    result.z *= scale;
+                    result.w *= scale;
+                    result.V *= scale;
+                }
+            }
+
+            // 重新归一化确保总和=100
+            const totalSum = result.x + result.y + result.z + result.w + result.V;
+            if (Math.abs(totalSum - 100) > 1e-6) {
+                const scale = 100 / totalSum;
+                result.x *= scale;
+                result.y *= scale;
+                result.z *= scale;
+                result.w *= scale;
+                result.V *= scale;
+            }
+
+            // ---- 计算校验指标 ----
+            // 1. 总质量
+            const totalCheck = result.x + result.y + result.z + result.w + result.V;
+
+            // 2. x:y 比例 (期望 1:2)
+            const ratioCheck = (result.y > 0) ? result.x / result.y : (result.x === 0 ? 0 : Infinity);
+            const ratioTarget = 0.5;
+            const ratioOk = (ratioCheck >= 0.49 && ratioCheck <= 0.51);
+            const ratioWarn = (ratioCheck >= 0.48 && ratioCheck <= 0.52);
+
+            // 3. 硫平衡偏差
+            // 计算实际硫平衡: ∑ n(SO3) - 0.5*∑ n(Al2O3)
+            const masses = [result.x, result.y, result.z, result.w, result.V];
+            let sulfurDev = 0;
+            for (let i = 0; i < 5; i++) {
+                const m = masses[i];
+                const d = data[i];
+                sulfurDev += m * (d.SO3 / MW.SO3 - 0.5 * d.Al2O3 / MW.Al2O3);
+            }
+            const sulfurOk = Math.abs(sulfurDev) < 1e-6;
+
+            // 4. 钙硅铝比
+            let nCa_total = 0,
+                nSi_total = 0,
+                nAl_total = 0;
+            for (let i = 0; i < 5; i++) {
+                const m = masses[i];
+                const d = data[i];
+                nCa_total += m * d.CaO / 100 / MW.CaO;
+                nSi_total += m * d.SiO2 / 100 / MW.SiO2;
+                nAl_total += m * d.Al2O3 / 100 / MW.Al2O3;
+            }
+            const denominator = 2 * nSi_total + (12 / 7) * nAl_total;
+            const caRatio = (denominator !== 0) ? nCa_total / denominator : Infinity;
+            const caOk = Math.abs(caRatio - 1.03) < 0.005;
+
+            result.checks = {
+                total: totalCheck,
+                totalOk: Math.abs(totalCheck - 100) < 1e-6,
+                ratio: ratioCheck,
+                ratioOk: ratioOk,
+                ratioWarn: ratioWarn,
+                sulfurDev: sulfurDev,
+                sulfurOk: sulfurOk,
+                caRatio: caRatio,
+                caOk: caOk,
+            };
+
+            return result;
+        }
+
+        // ================================================================
+        //  UI UPDATE
+        // ================================================================
+        function updateUserUI() {
+            if (currentUser) {
+                userDisplay.textContent = currentUser.username;
+                roleTag.textContent = currentUser.role === 'admin' ? '管理员' : '用户';
+                roleTag.style.display = 'inline';
+                loginBtn.classList.add('hidden');
+                logoutBtn.classList.remove('hidden');
+                userMgmtBtn.style.display = (currentUser.role === 'admin') ? 'inline-flex' : 'none';
+                $$('.input-cell').forEach(el => el.disabled = false);
+                calcBtn.disabled = false;
+                resetBtn.disabled = false;
+                inputStatus.textContent = '● 已登录';
+            } else {
+                userDisplay.textContent = '未登录';
+                roleTag.style.display = 'none';
+                loginBtn.classList.remove('hidden');
+                logoutBtn.classList.add('hidden');
+                userMgmtBtn.style.display = 'none';
+                $$('.input-cell').forEach(el => el.disabled = true);
+                calcBtn.disabled = true;
+                resetBtn.disabled = true;
+                clearOutputDisplay();
+                outputNote.textContent = '请登录后使用';
+                inputStatus.textContent = '⛔ 未登录';
+            }
+            renderUserList();
+            renderHistory();
+        }
+
+        function renderHistory() {
+            const history = getHistory();
+            historyCount.textContent = `${history.length} 条`;
+            if (!history.length) {
+                historyBody.innerHTML = `<tr><td colspan="7" class="history-empty">暂无历史记录</td></tr>`;
+                return;
+            }
+            let html = '';
+            history.forEach(rec => {
+                const vals = OUTPUT_KEYS.map(k => {
+                    const v = rec[k];
+                    return (v !== undefined && v !== null && !isNaN(v)) ? v.toFixed(4) : '—';
+                });
+                const ca = rec.caRatio !== undefined ? rec.caRatio.toFixed(4) : '—';
+                html += `<tr>
+                            <td class="time-col">${formatTime(rec.time)}</td>
+                            <td>${vals[0]}</td>
+                            <td>${vals[1]}</td>
+                            <td>${vals[2]}</td>
+                            <td>${vals[3]}</td>
+                            <td>${vals[4]}</td>
+                            <td>${ca}</td>
+                        </tr>`;
+            });
+            historyBody.innerHTML = html;
+        }
+
+        function renderUserList() {
+            const users = getUsers();
+            if (!users.length) {
+                userListContainer.innerHTML =
+                    `<div class="user-list-item" style="color:var(--text-light);justify-content:center;">暂无用户</div>`;
+                return;
+            }
+            let html = '';
+            users.forEach(u => {
+                const isSelf = currentUser && u.id === currentUser.id;
+                const isAdmin = u.role === 'admin';
+                const canDelete = currentUser && currentUser.role === 'admin' && !isSelf;
+                html += `<div class="user-list-item">
+                            <div class="info">
+                                <span class="uname">${u.username}</span>
+                                <span class="urole">${isAdmin ? '管理员' : '用户'}</span>
+                                ${isSelf ? '<span style="font-size:12px;color:var(--text-light);">（当前）</span>' : ''}
+                            </div>
+                            <div class="actions">
+                                ${canDelete ? `<button class="btn btn-danger btn-xs delete-user-btn" data-id="${u.id}">删除</button>` : ''}
+                            </div>
+                        </div>`;
+            });
+            userListContainer.innerHTML = html;
+            $$('.delete-user-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    if (confirm('确认删除该用户吗？')) deleteUser(btn.dataset.id);
+                });
+            });
+        }
+
+        function deleteUser(id) {
+            let users = getUsers();
+            users = users.filter(u => u.id !== id);
+            saveUsers(users);
+            if (currentUser && currentUser.id === id) {
+                setCurrentUser(null);
+                currentUser = null;
+                updateUserUI();
+                renderUserList();
+                renderHistory();
+            } else {
+                renderUserList();
+            }
+        }
+
+        function addUser(username, password, role) {
+            const users = getUsers();
+            if (users.find(u => u.username === username)) { alert('用户名已存在'); return false; }
+            if (!username.trim() || !password.trim()) { alert('用户名和密码不能为空'); return false; }
+            users.push({ id: genId(), username: username.trim(), password: password.trim(), role: role || 'user' });
+            saveUsers(users);
+            renderUserList();
+            return true;
+        }
+
+        // ================================================================
+        //  EVENT BINDINGS
+        // ================================================================
+
+        // ---- Login ----
+        function handleLogin() {
+            const username = loginUsername.value.trim();
+            const password = loginPassword.value.trim();
+            const user = findUser(username, password);
+            if (user) {
+                loginError.classList.remove('show');
+                setCurrentUser(user);
+                currentUser = user;
+                updateUserUI();
+                loginModal.classList.remove('active');
+                renderInputTable();
+                updateUserUI();
+                clearOutputDisplay();
+                outputNote.textContent = '请点击「计算配比」';
+                inputStatus.textContent = '● 已登录';
+            } else {
+                loginError.classList.add('show');
+            }
+        }
+        loginConfirmBtn.addEventListener('click', handleLogin);
+        loginPassword.addEventListener('keydown', (e) => { if (e.key === 'Enter') handleLogin(); });
+        loginUsername.addEventListener('keydown', (e) => { if (e.key === 'Enter') handleLogin(); });
+
+        // ---- Logout ----
+        logoutBtn.addEventListener('click', () => {
+            if (confirm('确认登出吗？')) {
+                setCurrentUser(null);
+                currentUser = null;
+                updateUserUI();
+                clearOutputDisplay();
+                outputNote.textContent = '已登出，请登录后使用';
+                inputStatus.textContent = '⛔ 未登录';
+                inputData = {};
+                renderInputTable();
+                updateUserUI();
+            }
+        });
+
+        // ---- Modal open/close ----
+        loginBtn.addEventListener('click', () => {
+            loginError.classList.remove('show');
+            loginModal.classList.add('active');
+            loginUsername.focus();
+        });
+        userMgmtBtn.addEventListener('click', () => {
+            if (currentUser && currentUser.role === 'admin') {
+                renderUserList();
+                userMgmtModal.classList.add('active');
+            } else alert('仅管理员可访问');
+        });
+        $$('[data-close]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const id = btn.dataset.close;
+                document.getElementById(id).classList.remove('active');
+            });
+        });
+        $$('.modal-overlay').forEach(overlay => {
+            overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.classList.remove('active'); });
+        });
+
+        // ---- Add user ----
+        addUserBtn.addEventListener('click', () => {
+            const username = newUsername.value.trim();
+            const password = newPassword.value.trim();
+            const role = newRole.value;
+            if (addUser(username, password, role)) {
+                newUsername.value = '';
+                newPassword.value = '';
+                newRole.value = 'user';
+                renderUserList();
+            }
+        });
+
+        // ---- Calculate ----
+        calcBtn.addEventListener('click', () => {
+            if (!currentUser) { alert('请先登录'); return; }
+
+            // 收集输入
+            const materials = MATERIALS.map(mat => {
+                const obj = {};
+                COMPONENTS.forEach(comp => {
+                    const el = document.querySelector(`.input-cell[data-mat="${mat}"][data-comp="${comp}"]`);
+                    if (el) {
+                        const val = el.value.trim() === '' ? '' : parseFloat(el.value);
+                        obj[comp] = (val === '' || isNaN(val)) ? 0 : val;
+                        // 同步到 inputData
+                        if (!inputData[mat]) inputData[mat] = {};
+                        if (val === '' || isNaN(val)) delete inputData[mat][comp];
+                        else inputData[mat][comp] = val;
+                    } else obj[comp] = 0;
+                });
+                return obj;
+            });
+
+            // 检查是否至少有一些数据
+            const hasData = materials.some(m => Object.values(m).some(v => v > 0));
+            if (!hasData) { alert('请至少输入一种物料的成分数据'); return; }
+
+            const result = computeRatios(materials);
+            if (result.error) {
+                alert('计算失败: ' + result.error);
+                return;
+            }
+
+            outputData = result;
+            setOutputDisplay(result);
+
+            // 保存历史
+            const record = {
+                x: result.x,
+                y: result.y,
+                z: result.z,
+                w: result.w,
+                V: result.V,
+                caRatio: result.checks ? result.checks.caRatio : null,
+                sulfurDev: result.checks ? result.checks.sulfurDev : null,
+            };
+            saveHistoryItem(record);
+            renderHistory();
+        });
+
+        // ---- Reset ----
+        resetBtn.addEventListener('click', () => {
+            if (!currentUser) return;
+            if (confirm('确认重置所有输入数据吗？')) {
+                inputData = {};
+                renderInputTable();
+                clearOutputDisplay();
+                outputData = null;
+                outputNote.textContent = '已重置，请重新输入';
+                inputStatus.textContent = '● 已重置';
+                updateUserUI();
+            }
+        });
+
+        // ---- Load Example ----
+        loadExampleBtn.addEventListener('click', () => {
+            if (!currentUser) { alert('请先登录'); return; }
+            // 从Excel总表提取的示例数据
+            const example = {
+                '煤矸石': { SiO2: 42.71, Al2O3: 30.01, CaO: 0.59, Fe2O3: 4.48, MgO: 0.18, SO3: 0.84 },
+                '粉煤灰': { SiO2: 36.37, Al2O3: 45.80, CaO: 5.10, Fe2O3: 4.19, MgO: 0.32, SO3: 0.93 },
+                '石灰石': { SiO2: 3.21, Al2O3: 0.77, CaO: 52.34, Fe2O3: 0.14, MgO: 1.14, SO3: 0 },
+                '脱硫石膏': { SiO2: 2.15, Al2O3: 0.73, CaO: 38.09, Fe2O3: 0.12, MgO: 0.29, SO3: 54.41 },
+                '电石渣': { SiO2: 3.85, Al2O3: 1.34, CaO: 64.05, Fe2O3: 0.24, MgO: 1.80, SO3: 0 },
+            };
+            inputData = {};
+            MATERIALS.forEach(mat => {
+                inputData[mat] = {};
+                COMPONENTS.forEach(comp => {
+                    inputData[mat][comp] = example[mat]?.[comp] ?? 0;
+                });
+            });
+            renderInputTable();
+            clearOutputDisplay();
+            outputData = null;
+            outputNote.textContent = '已加载示例数据，点击「计算配比」';
+            inputStatus.textContent = '● 示例已加载';
+            updateUserUI();
+        });
+
+        // ---- History ----
+        refreshHistoryBtn.addEventListener('click', renderHistory);
+        clearHistoryBtn.addEventListener('click', () => {
+            if (confirm('确认清空所有历史记录吗？')) { clearHistory();
+                renderHistory(); }
+        });
+
+        // ---- Keyboard: Ctrl+Enter ----
+        document.addEventListener('keydown', (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                e.preventDefault();
+                if (!calcBtn.disabled) calcBtn.click();
+            }
+        });
+
+        // ================================================================
+        //  INIT
+        // ================================================================
+        function init() {
+            // 先尝试加载保存的inputData，若无则使用示例
+            const saved = loadData('mp_inputData', null);
+            if (saved) {
+                inputData = saved;
+            } else {
+                // 默认加载示例
+                const example = {
+                    '煤矸石': { SiO2: 42.71, Al2O3: 30.01, CaO: 0.59, Fe2O3: 4.48, MgO: 0.18, SO3: 0.84 },
+                    '粉煤灰': { SiO2: 36.37, Al2O3: 45.80, CaO: 5.10, Fe2O3: 4.19, MgO: 0.32, SO3: 0.93 },
+                    '石灰石': { SiO2: 3.21, Al2O3: 0.77, CaO: 52.34, Fe2O3: 0.14, MgO: 1.14, SO3: 0 },
+                    '脱硫石膏': { SiO2: 2.15, Al2O3: 0.73, CaO: 38.09, Fe2O3: 0.12, MgO: 0.29, SO3: 54.41 },
+                    '电石渣': { SiO2: 3.85, Al2O3: 1.34, CaO: 64.05, Fe2O3: 0.24, MgO: 1.80, SO3: 0 },
+                };
+                inputData = example;
+            }
+            renderInputTable();
+            clearOutputDisplay();
+            updateUserUI();
+            renderHistory();
+
+            if (currentUser) {
+                inputStatus.textContent = '● 已登录，请输入数据';
+                outputNote.textContent = '请点击「计算配比」';
+            } else {
+                inputStatus.textContent = '⛔ 未登录';
+                outputNote.textContent = '请登录后使用';
+            }
+        }
+
+        // 自动保存输入数据
+        setInterval(() => {
+            if (Object.keys(inputData).length > 0) {
+                saveData('mp_inputData', inputData);
+            }
+        }, 5000);
+
+        init();
+        console.log('🏭 物料配比平台 v3.0 已加载');
+        console.log('📌 默认账户: admin/admin123, user/user123');
+        console.log('💡 提示: Ctrl+Enter 快速计算');
+    </script>
+
+</body>
+</html>
