@@ -19,6 +19,23 @@ docker compose up --build
 
 浏览器打开：http://localhost:21111
 
+若构建时报 `failed to resolve source metadata for docker.io/...`，说明访问 Docker Hub 失败。可先配置镜像加速后再构建：
+
+```bash
+sudo mkdir -p /etc/docker
+sudo tee /etc/docker/daemon.json >/dev/null <<'EOF'
+{
+  "registry-mirrors": [
+    "https://docker.m.daocloud.io",
+    "https://docker.1ms.run"
+  ]
+}
+EOF
+sudo systemctl daemon-reload
+sudo systemctl restart docker
+docker compose up --build -d
+```
+
 默认账号：
 
 | 用户名 | 密码 | 角色 |
